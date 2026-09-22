@@ -603,14 +603,19 @@
   /** Show the verdict card in the section. */
   function showVerdict(box, card) {
     box.hidden = false;
+    // The share button exists only when the painter that would serve it did.
+    // A button that clicks into nothing is a broken promise on a card whose
+    // whole job is being shared.
+    const canShare = typeof window !== 'undefined'
+      && window.PTPnlCard && typeof window.PTPnlCard.drawSparkCard === 'function';
     box.innerHTML = `
       <div class="spark-grade" style="color:${card.gradeColor}">${card.grade}</div>
       <div class="spark-grade-label">${card.gradeLabel}</div>
       <div class="spark-axis-line">${card.axisLine}</div>
       ${card.story ? `<div class="spark-story">${card.story}</div>` : ''}
-      <div class="spark-share-row">
+      ${canShare ? `<div class="spark-share-row">
         <button type="button" class="spark-btn spark-share">SHARE CARD</button>
-      </div>
+      </div>` : ''}
     `;
     const share = box.querySelector('.spark-share');
     if (share) {
